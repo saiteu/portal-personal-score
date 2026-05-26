@@ -382,8 +382,9 @@
 
       .panel-heading {
         display: flex;
-        align-items: baseline;
+        align-items: center;
         justify-content: space-between;
+        gap: 16px;
         margin-bottom: 16px;
       }
 
@@ -397,6 +398,191 @@
       .panel-heading span {
         color: var(--blue);
         font-weight: 900;
+      }
+
+      .rank-demo-button {
+        border: 1px solid rgba(255, 230, 41, 0.54);
+        color: var(--text);
+        background: rgba(255, 230, 41, 0.12);
+        font-weight: 900;
+        white-space: nowrap;
+      }
+
+      .rank-demo-button:hover,
+      .rank-demo-button:focus {
+        color: #181b16;
+        background: var(--gold);
+      }
+
+      .metric-ritual {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        display: grid;
+        place-items: center;
+        pointer-events: none;
+        opacity: 0;
+        visibility: hidden;
+        background:
+          radial-gradient(circle at 50% 56%, var(--ritual-core), transparent 11%),
+          radial-gradient(circle at 50% 54%, var(--ritual-aura), transparent 23%),
+          rgba(0, 0, 0, 0.72);
+      }
+
+      .metric-ritual.show {
+        visibility: visible;
+        animation: ritualFade var(--ritual-time, 2.7s) ease-out both;
+      }
+
+      .metric-ritual::before,
+      .metric-ritual::after {
+        position: absolute;
+        width: min(74%, 280px);
+        aspect-ratio: 1;
+        border: 1px solid var(--ritual-ring);
+        border-radius: 50%;
+        content: "";
+        animation: ritualRing var(--ritual-time, 2.7s) ease-out both;
+      }
+
+      .metric-ritual::after {
+        width: min(96%, 390px);
+        border-color: var(--ritual-ring-outer);
+        animation-delay: 0.18s;
+      }
+
+      .metric-ritual.rank-silver {
+        --ritual-core: rgba(210, 235, 255, 0.26);
+        --ritual-aura: rgba(160, 205, 255, 0.13);
+        --ritual-ring: rgba(217, 238, 255, 0.48);
+        --ritual-ring-outer: rgba(151, 197, 255, 0.22);
+        --ritual-title: #e8f6ff;
+        --ritual-ember: #d8f1ff;
+        --ritual-glow: #9ecfff;
+        --ritual-time: 2.35s;
+      }
+
+      .metric-ritual.rank-gold {
+        --ritual-core: rgba(255, 166, 56, 0.34);
+        --ritual-aura: rgba(255, 221, 113, 0.16);
+        --ritual-ring: rgba(255, 204, 92, 0.58);
+        --ritual-ring-outer: rgba(255, 129, 46, 0.3);
+        --ritual-title: #ffe7a3;
+        --ritual-ember: #ffb23e;
+        --ritual-glow: #ff7b22;
+        --ritual-time: 2.7s;
+      }
+
+      .metric-ritual.rank-platinum {
+        --ritual-core: rgba(255, 255, 255, 0.46);
+        --ritual-aura: rgba(129, 227, 255, 0.28);
+        --ritual-ring: rgba(245, 252, 255, 0.92);
+        --ritual-ring-outer: rgba(145, 220, 255, 0.54);
+        --ritual-title: #f7fdff;
+        --ritual-ember: #ffffff;
+        --ritual-glow: #91dcff;
+        --ritual-time: 3.05s;
+        background:
+          radial-gradient(circle at 50% 58%, rgba(255, 255, 255, 0.52), transparent 10%),
+          radial-gradient(circle at 50% 54%, rgba(145, 220, 255, 0.32), transparent 27%),
+          linear-gradient(120deg, rgba(255,255,255,0.08), transparent 36%, rgba(145,220,255,0.12)),
+          rgba(0, 0, 0, 0.78);
+      }
+
+      .metric-ritual.rank-platinum::before {
+        box-shadow:
+          0 0 22px rgba(255, 255, 255, 0.58),
+          0 0 46px rgba(145, 220, 255, 0.38);
+      }
+
+      .ritual-panel {
+        position: relative;
+        display: grid;
+        gap: 12px;
+        justify-items: center;
+        text-align: center;
+        text-shadow:
+          0 0 12px rgba(255, 229, 150, 0.75),
+          0 0 34px rgba(255, 128, 34, 0.78);
+      }
+
+      .ritual-label {
+        color: rgba(255, 231, 158, 0.84);
+        font-size: clamp(0.7rem, 0.9vw, 0.92rem);
+        font-weight: 900;
+        letter-spacing: 0.24em;
+      }
+
+      .ritual-title {
+        color: var(--ritual-title);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(2.1rem, 4vw, 4.6rem);
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        line-height: 1;
+      }
+
+      .ritual-route {
+        color: var(--text);
+        font-size: clamp(0.95rem, 1.35vw, 1.25rem);
+        font-weight: 900;
+      }
+
+      .ember-field {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+
+      .ember {
+        position: absolute;
+        bottom: 20%;
+        left: var(--x);
+        width: var(--size);
+        height: var(--size);
+        border-radius: 50%;
+        background: var(--ritual-ember);
+        box-shadow: 0 0 14px var(--ritual-glow);
+        animation: emberRise var(--duration) ease-out var(--delay) infinite;
+      }
+
+      .platinum-only {
+        display: none;
+      }
+
+      .rank-platinum .ritual-title {
+        font-size: clamp(2.3rem, 4.8vw, 5.2rem);
+        text-shadow:
+          0 0 10px rgba(255, 255, 255, 0.95),
+          0 0 34px rgba(145, 220, 255, 0.9),
+          0 0 64px rgba(255, 255, 255, 0.55);
+      }
+
+      .rank-platinum .ember {
+        animation-duration: calc(var(--duration) * 1.18);
+      }
+
+      .rank-platinum .platinum-only {
+        display: block;
+      }
+
+      @keyframes ritualFade {
+        0% { opacity: 0; }
+        12% { opacity: 1; }
+        72% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+
+      @keyframes ritualRing {
+        0% { opacity: 0; transform: scale(0.42); }
+        20% { opacity: 0.9; }
+        100% { opacity: 0; transform: scale(1.28); }
+      }
+
+      @keyframes emberRise {
+        0% { opacity: 0; transform: translateY(0) scale(0.7); }
+        20% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(-280px) translateX(var(--drift)) scale(0.2); }
       }
 
       .activity-items {
@@ -622,7 +808,11 @@
             </div>
           </div>
           <div class="rank">
-            <div class="rank-title"><i class="fas fa-crown" aria-hidden="true"></i> <span data-field="aht.rank">GOLD</span></div>
+            <div class="rank-title">
+              <i class="fas fa-crown" aria-hidden="true"></i>
+              <span data-field="aht.rank">GOLD</span>
+              <button class="rank-demo-button btn btn-sm ms-auto" data-rank-demo="aht" type="button" aria-label="AHT 昇格演出">演出</button>
+            </div>
             <div class="rank-note" data-field="aht.note"><i class="fas fa-arrow-up" aria-hidden="true"></i> PLATINUM まであと <span style="color: var(--blue);">-15sec</span></div>
             <div class="progress-track">
               <div class="progress-fill"></div>
@@ -644,7 +834,11 @@
             </div>
           </div>
           <div class="rank">
-            <div class="rank-title"><i class="fas fa-crown" aria-hidden="true"></i> <span data-field="csat.rank">PLATINUM <span style="font-size: 1.35rem;">#3</span></span></div>
+            <div class="rank-title">
+              <i class="fas fa-crown" aria-hidden="true"></i>
+              <span data-field="csat.rank">PLATINUM <span style="font-size: 1.35rem;">#3</span></span>
+              <button class="rank-demo-button btn btn-sm ms-auto" data-rank-demo="csat" type="button" aria-label="CSAT 昇格演出">演出</button>
+            </div>
             <div class="rank-note justify-content-center" data-field="csat.note">最上位ランク達成中</div>
             <div class="progress-track">
               <div class="progress-fill"></div>
@@ -666,7 +860,11 @@
             </div>
           </div>
           <div class="rank">
-            <div class="rank-title"><i class="fas fa-crown" aria-hidden="true"></i> <span data-field="question.rank">SILVER</span></div>
+            <div class="rank-title">
+              <i class="fas fa-crown" aria-hidden="true"></i>
+              <span data-field="question.rank">SILVER</span>
+              <button class="rank-demo-button btn btn-sm ms-auto" data-rank-demo="question" type="button" aria-label="質疑率 昇格演出">演出</button>
+            </div>
             <div class="rank-note" data-field="question.note"><i class="fas fa-arrow-up" aria-hidden="true"></i> <span style="color: var(--gold);">GOLD</span> まであと <span style="color: var(--blue);">-0.8pt</span></div>
             <div class="progress-track">
               <div class="progress-fill"></div>
@@ -817,6 +1015,64 @@
 
       document.querySelectorAll("[data-season]").forEach((tab) => {
         tab.addEventListener("shown.bs.tab", () => renderSeason(tab.dataset.season));
+      });
+
+      const rankUpSteps = [
+        ["BRONZE", "SILVER"],
+        ["SILVER", "GOLD"],
+        ["GOLD", "PLATINUM"]
+      ];
+      let rankUpIndex = 0;
+      const emberHtml = `
+        <span class="ember" style="--x: 16%; --size: 7px; --duration: 1.9s; --delay: 0s; --drift: -22px;"></span>
+        <span class="ember" style="--x: 28%; --size: 5px; --duration: 2.4s; --delay: .2s; --drift: 18px;"></span>
+        <span class="ember" style="--x: 42%; --size: 8px; --duration: 2.1s; --delay: .05s; --drift: -30px;"></span>
+        <span class="ember" style="--x: 56%; --size: 6px; --duration: 2.6s; --delay: .34s; --drift: 24px;"></span>
+        <span class="ember" style="--x: 70%; --size: 8px; --duration: 2.2s; --delay: .1s; --drift: -18px;"></span>
+        <span class="ember" style="--x: 84%; --size: 5px; --duration: 2.5s; --delay: .28s; --drift: 32px;"></span>
+      `;
+      const platinumEmbers = `
+        <span class="ember platinum-only" style="--x: 22%; --size: 4px; --duration: 1.8s; --delay: .12s; --drift: 36px;"></span>
+        <span class="ember platinum-only" style="--x: 35%; --size: 6px; --duration: 2.3s; --delay: .32s; --drift: -40px;"></span>
+        <span class="ember platinum-only" style="--x: 50%; --size: 5px; --duration: 1.7s; --delay: .06s; --drift: 26px;"></span>
+        <span class="ember platinum-only" style="--x: 64%; --size: 7px; --duration: 2.4s; --delay: .24s; --drift: -28px;"></span>
+        <span class="ember platinum-only" style="--x: 78%; --size: 4px; --duration: 2s; --delay: .18s; --drift: 34px;"></span>
+      `;
+
+      function createMetricRitual(card) {
+        card.insertAdjacentHTML("beforeend", `
+          <div class="metric-ritual" aria-hidden="true">
+            <div class="ember-field" aria-hidden="true">${emberHtml}${platinumEmbers}</div>
+            <div class="ritual-panel">
+              <div class="ritual-label">RANK ASCENDED</div>
+              <div class="ritual-title" data-ritual-title>SILVER</div>
+              <div class="ritual-route"><span data-ritual-from>BRONZE</span> → <span data-ritual-to>SILVER</span></div>
+            </div>
+          </div>
+        `);
+        card.querySelector(".metric-ritual").addEventListener("animationend", (event) => {
+          if (event.animationName === "ritualFade") event.currentTarget.classList.remove("show");
+        });
+      }
+
+      document.querySelectorAll("[data-metric-card]").forEach(createMetricRitual);
+
+      function fireRankUp(metric) {
+        const [fromRank, toRank] = rankUpSteps[rankUpIndex];
+        rankUpIndex = (rankUpIndex + 1) % rankUpSteps.length;
+
+        const ritual = document.querySelector(`[data-metric-card="${metric}"] .metric-ritual`);
+        ritual.querySelector("[data-ritual-from]").textContent = fromRank;
+        ritual.querySelector("[data-ritual-to]").textContent = toRank;
+        ritual.querySelector("[data-ritual-title]").textContent = toRank;
+        ritual.classList.remove("show", "rank-silver", "rank-gold", "rank-platinum");
+        ritual.classList.add(`rank-${toRank.toLowerCase()}`);
+        void ritual.offsetWidth;
+        ritual.classList.add("show");
+      }
+
+      document.querySelectorAll("[data-rank-demo]").forEach((button) => {
+        button.addEventListener("click", () => fireRankUp(button.dataset.rankDemo));
       });
     </script>
   </body>
