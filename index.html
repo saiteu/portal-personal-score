@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MY PERFORMANCE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+    <style>
+      :root {
+        --bg: #151817;
+        --panel: rgba(28, 31, 31, 0.86);
+        --panel-strong: rgba(39, 43, 45, 0.92);
+        --line: rgba(255, 255, 255, 0.12);
+        --text: #fff8cf;
+        --muted: rgba(255, 248, 207, 0.65);
+        --green: #9bff54;
+        --blue: #91dcff;
+        --pink: #f6c8ff;
+        --gold: #ffe600;
+        --silver: #f6f0cc;
+        --shadow: 0 24px 50px rgba(0, 0, 0, 0.42);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        color: var(--text);
+        font-family: "Arial Rounded MT Bold", "Helvetica Neue", Arial, sans-serif;
+        letter-spacing: 0;
+        background:
+          radial-gradient(circle at 28% 35%, rgba(95, 126, 112, 0.24), transparent 34%),
+          radial-gradient(circle at 72% 20%, rgba(80, 72, 62, 0.28), transparent 30%),
+          linear-gradient(145deg, #161b1b 0%, #0d1111 54%, #151412 100%);
+      }
+
+      .scoreboard {
+        width: min(1680px, calc(100vw - 32px));
+        min-height: calc(100vh - 32px);
+        margin: 16px auto;
+        padding: 38px 34px 28px;
+        border: 1px solid rgba(145, 220, 255, 0.24);
+        background:
+          linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+          rgba(10, 12, 13, 0.64);
+        background-size: 56px 56px;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035), var(--shadow);
+      }
+
+      .topbar {
+        display: grid;
+        grid-template-columns: minmax(360px, 1fr) auto;
+        gap: 32px;
+        align-items: center;
+        margin-bottom: 38px;
+      }
+
+      .title {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin: 0;
+        color: var(--text);
+        font-size: clamp(1.9rem, 2.8vw, 3.3rem);
+        font-weight: 900;
+        line-height: 1;
+        text-shadow: 0 0 9px rgba(255, 248, 207, 0.26);
+      }
+
+      .title i {
+        color: #ffe629;
+        filter: drop-shadow(0 0 8px rgba(255, 230, 41, 0.32));
+      }
+
+      .season-tabs {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(86px, 1fr));
+        gap: 18px;
+        align-items: center;
+      }
+
+      .season-tab {
+        min-height: 58px;
+        border: 0;
+        border-radius: 8px;
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.035);
+        font-size: 1.35rem;
+        font-weight: 900;
+        text-align: center;
+      }
+
+      .season-tab.nav-link {
+        padding: 0;
+      }
+
+      .season-tab.active,
+      .season-tab.nav-link.active {
+        color: #22313a;
+        background: var(--blue);
+        box-shadow: 0 0 22px rgba(145, 220, 255, 0.38);
+      }
+
+      .season-date {
+        color: var(--muted);
+        font-size: 1rem;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 26px;
+        margin-bottom: 40px;
+      }
+
+      .metric-card {
+        position: relative;
+        min-height: 350px;
+        padding: 30px 24px 24px;
+        overflow: hidden;
+        background: linear-gradient(180deg, rgba(54, 57, 54, 0.66), rgba(20, 24, 25, 0.8));
+        box-shadow: var(--shadow);
+      }
+
+      .metric-card::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 8px;
+        content: "";
+        background: var(--accent);
+        box-shadow: 0 0 14px var(--accent);
+      }
+
+      .metric-head {
+        display: grid;
+        grid-template-columns: 64px minmax(72px, 1fr) auto;
+        gap: 14px;
+        align-items: start;
+      }
+
+      .metric-icon {
+        display: grid;
+        width: 58px;
+        height: 58px;
+        place-items: center;
+        border-radius: 50%;
+        color: #1a2421;
+        background: var(--accent);
+        font-size: 1.75rem;
+        box-shadow: 0 0 18px rgba(155, 255, 84, 0.24);
+      }
+
+      .metric-name {
+        margin-top: 2px;
+        color: var(--accent);
+        font-size: clamp(1.18rem, 1.35vw, 1.72rem);
+        font-weight: 900;
+        line-height: 1.05;
+        word-break: keep-all;
+      }
+
+      .metric-sub {
+        color: var(--muted);
+        font-size: 1rem;
+        font-weight: 800;
+      }
+
+      .metric-value {
+        color: var(--text);
+        font-size: clamp(2.7rem, 3.45vw, 4.2rem);
+        font-weight: 900;
+        line-height: 0.92;
+        text-align: right;
+        text-shadow: 0 0 11px rgba(255, 248, 207, 0.3);
+      }
+
+      .metric-average {
+        margin-top: 16px;
+        color: var(--muted);
+        font-size: 0.98rem;
+        font-weight: 900;
+        text-align: right;
+      }
+
+      .up {
+        color: var(--green);
+      }
+
+      .rank {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-top: 34px;
+      }
+
+      .rank-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: clamp(1.65rem, 2.1vw, 2.65rem);
+        font-weight: 900;
+      }
+
+      .rank-title i {
+        color: var(--rank-color);
+        filter: drop-shadow(0 0 9px rgba(255, 246, 190, 0.28));
+      }
+
+      .rank-note {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 70px;
+        padding: 14px 18px;
+        color: var(--text);
+        background: rgba(8, 12, 14, 0.38);
+        font-size: 1.05rem;
+        font-weight: 900;
+      }
+
+      .rank-note i {
+        color: var(--blue);
+        font-size: 2rem;
+      }
+
+      .progress-track {
+        position: relative;
+        height: 22px;
+        margin-top: 4px;
+        overflow: visible;
+        background: rgba(255, 255, 255, 0.16);
+        border-radius: 4px;
+      }
+
+      .progress-fill {
+        width: var(--progress);
+        height: 100%;
+        border-radius: 4px;
+        background: var(--accent);
+        box-shadow: 0 0 14px var(--accent);
+      }
+
+      .progress-label {
+        position: absolute;
+        right: 0;
+        bottom: -28px;
+        color: var(--muted);
+        font-weight: 900;
+      }
+
+      .lower-grid {
+        display: grid;
+        grid-template-columns: 1.06fr 0.94fr;
+        gap: 36px;
+        align-items: stretch;
+      }
+
+      .section-title {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin: 0 0 28px;
+        font-size: clamp(1.45rem, 2vw, 2.1rem);
+        font-weight: 900;
+        letter-spacing: 0.18em;
+      }
+
+      .section-title i {
+        color: var(--gold);
+      }
+
+      .achievement-tabs {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 28px;
+        align-items: center;
+        margin-bottom: 10px;
+        padding: 0 28px;
+      }
+
+      .ach-tab {
+        display: grid;
+        min-height: 48px;
+        place-items: center;
+        border: 3px solid var(--tab-color);
+        border-radius: 24px;
+        color: var(--tab-color);
+        background: rgba(255, 255, 255, 0.11);
+        font-size: 1.15rem;
+        font-weight: 900;
+      }
+
+      .timeline {
+        height: 10px;
+        margin: 0 64px 16px;
+        border-radius: 99px;
+        background: linear-gradient(90deg, #fff6b0 0%, #fff14b 40%, #9de8ff 75%, rgba(255,255,255,0.22) 75%);
+      }
+
+      .achievement-cards {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .history-card {
+        min-height: 250px;
+        padding: 22px 12px;
+        border: 2px solid var(--card-color);
+        border-radius: 8px;
+        background: linear-gradient(180deg, rgba(91, 101, 118, 0.52), rgba(42, 43, 45, 0.48));
+        box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.04);
+      }
+
+      .history-card.muted {
+        opacity: 0.42;
+        filter: grayscale(0.5);
+      }
+
+      .history-period {
+        margin-bottom: 12px;
+        color: var(--muted);
+        font-size: 0.95rem;
+        font-weight: 900;
+        text-align: center;
+      }
+
+      .history-rank {
+        margin-bottom: 18px;
+        color: var(--card-color);
+        font-size: 1.6rem;
+        font-weight: 900;
+        text-align: center;
+      }
+
+      .history-row {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        color: var(--text);
+        font-size: 0.88rem;
+        font-weight: 800;
+        line-height: 1.35;
+      }
+
+      .history-row span {
+        white-space: nowrap;
+      }
+
+      .history-row span:last-child {
+        color: var(--card-color);
+      }
+
+      .last-update {
+        margin-top: 20px;
+        color: var(--muted);
+        font-size: 0.95rem;
+        font-weight: 900;
+        text-align: center;
+      }
+
+      .right-stack {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 26px;
+      }
+
+      .activity-panel,
+      .trend-panel {
+        padding: 20px 26px 24px;
+        background: rgba(16, 19, 18, 0.52);
+      }
+
+      .panel-heading {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+
+      .panel-heading h2 {
+        margin: 0;
+        font-size: 1.55rem;
+        font-weight: 900;
+        letter-spacing: 0.18em;
+      }
+
+      .panel-heading span {
+        color: var(--blue);
+        font-weight: 900;
+      }
+
+      .activity-items {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+
+      .activity-item {
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        gap: 10px;
+        align-items: start;
+      }
+
+      .activity-item i {
+        color: var(--item-color);
+        font-size: 2rem;
+      }
+
+      .activity-label {
+        color: var(--text);
+        font-size: 1rem;
+        font-weight: 900;
+      }
+
+      .activity-value {
+        color: var(--text);
+        font-size: clamp(2rem, 2.6vw, 3rem);
+        font-weight: 900;
+        line-height: 1;
+      }
+
+      .activity-delta {
+        color: var(--green);
+        font-size: 1rem;
+        font-weight: 900;
+      }
+
+      .trend-panel {
+        min-height: 245px;
+      }
+
+      .trend-title-row {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 18px;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+
+      .trend-title-row h2,
+      .trend-title-row p {
+        margin: 0;
+        font-weight: 900;
+      }
+
+      .trend-title-row h2 {
+        font-size: 1.45rem;
+        letter-spacing: 0.16em;
+      }
+
+      .trend-title-row p {
+        color: var(--green);
+      }
+
+      .legend {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 0.95rem;
+        font-weight: 900;
+      }
+
+      .legend-dot {
+        width: 10px;
+        height: 10px;
+        background: var(--green);
+      }
+
+      .chart {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 26px;
+        align-items: end;
+        height: 150px;
+        padding: 26px 12px 0;
+      }
+
+      .chart::before {
+        position: absolute;
+        top: 26px;
+        right: 0;
+        left: 0;
+        border-top: 4px dashed #ff875d;
+        content: "";
+      }
+
+      .desk-average {
+        position: absolute;
+        top: 2px;
+        right: 4px;
+        color: #ffb28c;
+        font-size: 0.9rem;
+        font-weight: 900;
+      }
+
+      .bar-wrap {
+        display: grid;
+        grid-template-rows: 1fr auto;
+        gap: 8px;
+        align-items: end;
+        height: 100%;
+        min-width: 0;
+      }
+
+      .bar {
+        min-height: 18px;
+        border-radius: 3px 3px 0 0;
+        background: rgba(176, 224, 131, 0.82);
+        box-shadow: 0 0 14px rgba(155, 255, 84, 0.16);
+      }
+
+      .bar.current {
+        background: var(--green);
+      }
+
+      .bar-label {
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 900;
+        text-align: center;
+      }
+
+      @media (max-width: 1180px) {
+        .scoreboard {
+          padding: 28px 22px;
+        }
+
+        .topbar,
+        .metrics,
+        .lower-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .season-tabs {
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 760px) {
+        .scoreboard {
+          width: min(100vw, 100%);
+          min-height: 100vh;
+          margin: 0;
+          padding: 24px 14px;
+        }
+
+        .title {
+          font-size: 1.65rem;
+        }
+
+        .season-tabs,
+        .achievement-tabs,
+        .achievement-cards,
+        .activity-items {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .metric-head {
+          grid-template-columns: 64px 1fr;
+        }
+
+        .metric-value,
+        .metric-average {
+          grid-column: 1 / -1;
+          text-align: left;
+        }
+
+        .chart {
+          gap: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="scoreboard">
+      <header class="topbar">
+        <h1 class="title">
+          <i class="fas fa-trophy" aria-hidden="true"></i>
+          <span>MY PERFORMANCE</span>
+        </h1>
+
+        <nav class="season-tabs nav nav-pills" aria-label="Season navigation" role="tablist">
+          <button class="season-tab nav-link" id="season-s1-tab" data-bs-toggle="pill" data-bs-target="#season-s1" data-season="s1" type="button" role="tab" aria-controls="season-s1">S1</button>
+          <button class="season-tab nav-link" id="season-s2-tab" data-bs-toggle="pill" data-bs-target="#season-s2" data-season="s2" type="button" role="tab" aria-controls="season-s2">S2</button>
+          <button class="season-tab nav-link active" id="season-s3-tab" data-bs-toggle="pill" data-bs-target="#season-s3" data-season="s3" type="button" role="tab" aria-controls="season-s3" aria-selected="true">S3</button>
+          <button class="season-tab nav-link" id="season-s4-tab" data-bs-toggle="pill" data-bs-target="#season-s4" data-season="s4" type="button" role="tab" aria-controls="season-s4">S4</button>
+          <span class="season-date">2026.05.13</span>
+        </nav>
+      </header>
+
+      <div class="tab-content visually-hidden" aria-hidden="true">
+        <div class="tab-pane fade" id="season-s1" role="tabpanel" aria-labelledby="season-s1-tab"></div>
+        <div class="tab-pane fade" id="season-s2" role="tabpanel" aria-labelledby="season-s2-tab"></div>
+        <div class="tab-pane fade show active" id="season-s3" role="tabpanel" aria-labelledby="season-s3-tab"></div>
+        <div class="tab-pane fade" id="season-s4" role="tabpanel" aria-labelledby="season-s4-tab"></div>
+      </div>
+
+      <section class="metrics" aria-label="Performance metrics">
+        <article class="metric-card" data-metric-card="aht" style="--accent: var(--green); --rank-color: var(--gold); --progress: 72%;">
+          <div class="metric-head">
+            <div class="metric-icon"><i class="fas fa-clock" aria-hidden="true"></i></div>
+            <div>
+              <div class="metric-name">AHT</div>
+              <div class="metric-sub">効率指標</div>
+            </div>
+            <div>
+              <div class="metric-value" data-field="aht.value">350<small>sec</small></div>
+              <div class="metric-average">平均 <span data-field="aht.average">570sec</span> <span class="up" data-field="aht.delta">-45sec</span></div>
+            </div>
+          </div>
+          <div class="rank">
+            <div class="rank-title"><i class="fas fa-crown" aria-hidden="true"></i> <span data-field="aht.rank">GOLD</span></div>
+            <div class="rank-note" data-field="aht.note"><i class="fas fa-arrow-up" aria-hidden="true"></i> PLATINUM まであと <span style="color: var(--blue);">-15sec</span></div>
+            <div class="progress-track">
+              <div class="progress-fill"></div>
+              <div class="progress-label" data-field="aht.progressLabel">72%</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="metric-card" data-metric-card="csat" style="--accent: var(--blue); --rank-color: var(--silver); --progress: 100%;">
+          <div class="metric-head">
+            <div class="metric-icon"><i class="fas fa-smile" aria-hidden="true"></i></div>
+            <div>
+              <div class="metric-name">CSAT（Rating5）</div>
+              <div class="metric-sub">品質指標</div>
+            </div>
+            <div>
+              <div class="metric-value" data-field="csat.value">92</div>
+              <div class="metric-average">平均 <span data-field="csat.average">88</span> <span class="up" data-field="csat.delta">+4</span></div>
+            </div>
+          </div>
+          <div class="rank">
+            <div class="rank-title"><i class="fas fa-crown" aria-hidden="true"></i> <span data-field="csat.rank">PLATINUM <span style="font-size: 1.35rem;">#3</span></span></div>
+            <div class="rank-note justify-content-center" data-field="csat.note">最上位ランク達成中</div>
+            <div class="progress-track">
+              <div class="progress-fill"></div>
+              <div class="progress-label" data-field="csat.progressLabel">100%</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="metric-card" data-metric-card="question" style="--accent: var(--pink); --rank-color: var(--silver); --progress: 45%;">
+          <div class="metric-head">
+            <div class="metric-icon"><i class="fas fa-question" aria-hidden="true"></i></div>
+            <div>
+              <div class="metric-name">質疑率</div>
+              <div class="metric-sub">業務知識</div>
+            </div>
+            <div>
+              <div class="metric-value" data-field="question.value">3.2<small>%</small></div>
+              <div class="metric-average">平均 <span data-field="question.average">5.8%</span> <span class="up" data-field="question.delta">-2.6pt</span></div>
+            </div>
+          </div>
+          <div class="rank">
+            <div class="rank-title"><i class="fas fa-crown" aria-hidden="true"></i> <span data-field="question.rank">SILVER</span></div>
+            <div class="rank-note" data-field="question.note"><i class="fas fa-arrow-up" aria-hidden="true"></i> <span style="color: var(--gold);">GOLD</span> まであと <span style="color: var(--blue);">-0.8pt</span></div>
+            <div class="progress-track">
+              <div class="progress-fill"></div>
+              <div class="progress-label" data-field="question.progressLabel">45%</div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="lower-grid">
+        <div>
+          <h2 class="section-title"><i class="fas fa-award" aria-hidden="true"></i> ACHIEVEMENTS</h2>
+          <div class="achievement-tabs" aria-label="Achievement seasons">
+            <div class="ach-tab" style="--tab-color: var(--text);">S1</div>
+            <div class="ach-tab" style="--tab-color: var(--gold);">S2</div>
+            <div class="ach-tab" style="--tab-color: var(--blue);">S3</div>
+            <div class="ach-tab" style="--tab-color: rgba(255,255,255,0.55);">S4</div>
+          </div>
+          <div class="timeline"></div>
+          <div class="achievement-cards">
+            <article class="history-card" style="--card-color: var(--text);">
+              <div class="history-period">2025 Jul-Sep</div>
+              <div class="history-rank">Silver</div>
+              <div class="history-row"><span>AHT</span><span>Silver</span></div>
+              <div class="history-row"><span>CSAT</span><span>Bronze</span></div>
+              <div class="history-row"><span>質疑率</span><span>Bronze</span></div>
+            </article>
+            <article class="history-card" style="--card-color: var(--gold);">
+              <div class="history-period">2025 Oct-Dec</div>
+              <div class="history-rank">Gold</div>
+              <div class="history-row"><span>AHT</span><span>Gold #4</span></div>
+              <div class="history-row"><span>CSAT</span><span>Silver</span></div>
+              <div class="history-row"><span>質疑率</span><span>Silver</span></div>
+            </article>
+            <article class="history-card" style="--card-color: var(--blue);">
+              <div class="history-period">2026 Jan-Mar</div>
+              <div class="history-rank">Platinum</div>
+              <div class="history-row"><span>AHT</span><span>Gold</span></div>
+              <div class="history-row"><span>CSAT</span><span>Platinum #3</span></div>
+              <div class="history-row"><span>質疑率</span><span>Silver</span></div>
+            </article>
+            <article class="history-card muted" style="--card-color: rgba(255,255,255,0.54);">
+              <div class="history-period">2026 Apr-Jun</div>
+              <div class="history-rank">S4</div>
+              <div class="history-row"><span>AHT</span><span>--</span></div>
+              <div class="history-row"><span>CSAT</span><span>--</span></div>
+              <div class="history-row"><span>質疑率</span><span>--</span></div>
+            </article>
+          </div>
+          <div class="last-update">最終更新: 2026/05/13 15:00</div>
+        </div>
+
+        <div class="right-stack">
+          <section class="activity-panel" aria-label="Activity log">
+            <div class="panel-heading">
+              <h2>ACTIVITY LOG</h2>
+              <span>S3 累計</span>
+            </div>
+            <div class="activity-items">
+              <div class="activity-item" style="--item-color: var(--green);">
+                <i class="fas fa-comments" aria-hidden="true"></i>
+                <div>
+                  <div class="activity-label">リプライ数</div>
+                  <div class="activity-value">1,847</div>
+                  <div class="activity-delta">前週+32</div>
+                </div>
+              </div>
+              <div class="activity-item" style="--item-color: var(--blue);">
+                <i class="fas fa-clipboard-check" aria-hidden="true"></i>
+                <div>
+                  <div class="activity-label">満足回答数</div>
+                  <div class="activity-value">423</div>
+                  <div class="activity-delta">前週+8</div>
+                </div>
+              </div>
+              <div class="activity-item" style="--item-color: #ffb224;">
+                <i class="fas fa-fire" aria-hidden="true"></i>
+                <div>
+                  <div class="activity-label">連続稼働</div>
+                  <div class="activity-value">47日</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="trend-panel" aria-label="KPI trend">
+            <div class="trend-title-row">
+              <h2>KPI TREND</h2>
+              <p>AHT推移（週次）</p>
+              <div class="legend"><span class="legend-dot"></span>あなた <span>-- デスク平均</span></div>
+            </div>
+            <div class="chart">
+              <span class="desk-average">デスク平均</span>
+              <div class="bar-wrap"><div class="bar" style="height: 104px;"></div><div class="bar-label">W1</div></div>
+              <div class="bar-wrap"><div class="bar" style="height: 88px;"></div><div class="bar-label">W2</div></div>
+              <div class="bar-wrap"><div class="bar" style="height: 76px;"></div><div class="bar-label">W3</div></div>
+              <div class="bar-wrap"><div class="bar" style="height: 62px;"></div><div class="bar-label">W4</div></div>
+              <div class="bar-wrap"><div class="bar" style="height: 52px;"></div><div class="bar-label">W5</div></div>
+              <div class="bar-wrap"><div class="bar" style="height: 38px;"></div><div class="bar-label">W6</div></div>
+              <div class="bar-wrap"><div class="bar" style="height: 30px;"></div><div class="bar-label">W7</div></div>
+              <div class="bar-wrap"><div class="bar current" style="height: 25px;"></div><div class="bar-label">W8</div></div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      const seasonMetrics = {
+        s1: {
+          aht: { value: "610<small>sec</small>", average: "640sec", delta: "-30sec", rank: "SILVER", note: '<i class="fas fa-arrow-up" aria-hidden="true"></i> GOLD まであと <span style="color: var(--blue);">-40sec</span>', progress: "58%" },
+          csat: { value: "82", average: "84", delta: "-2", rank: "BRONZE", note: '<i class="fas fa-arrow-up" aria-hidden="true"></i> SILVER まであと <span style="color: var(--blue);">+3</span>', progress: "42%" },
+          question: { value: "6.4<small>%</small>", average: "7.2%", delta: "-0.8pt", rank: "BRONZE", note: '<i class="fas fa-arrow-up" aria-hidden="true"></i> SILVER まであと <span style="color: var(--blue);">-0.9pt</span>', progress: "36%" }
+        },
+        s2: {
+          aht: { value: "430<small>sec</small>", average: "590sec", delta: "-60sec", rank: "GOLD", note: '<i class="fas fa-arrow-up" aria-hidden="true"></i> PLATINUM まであと <span style="color: var(--blue);">-35sec</span>', progress: "76%" },
+          csat: { value: "87", average: "86", delta: "+1", rank: "SILVER", note: '<i class="fas fa-arrow-up" aria-hidden="true"></i> GOLD まであと <span style="color: var(--blue);">+2</span>', progress: "68%" },
+          question: { value: "4.8<small>%</small>", average: "6.1%", delta: "-1.3pt", rank: "SILVER", note: '<i class="fas fa-arrow-up" aria-hidden="true"></i> GOLD まであと <span style="color: var(--blue);">-1.0pt</span>', progress: "52%" }
+        },
+        s3: {
+          aht: { value: "350<small>sec</small>", average: "570sec", delta: "-45sec", rank: "GOLD", note: '<i class="fas fa-arrow-up" aria-hidden="true"></i> PLATINUM まであと <span style="color: var(--blue);">-15sec</span>', progress: "72%" },
+          csat: { value: "92", average: "88", delta: "+4", rank: 'PLATINUM <span style="font-size: 1.35rem;">#3</span>', note: "最上位ランク達成中", progress: "100%" },
+          question: { value: "3.2<small>%</small>", average: "5.8%", delta: "-2.6pt", rank: "SILVER", note: '<i class="fas fa-arrow-up" aria-hidden="true"></i> <span style="color: var(--gold);">GOLD</span> まであと <span style="color: var(--blue);">-0.8pt</span>', progress: "45%" }
+        },
+        s4: {
+          aht: { value: "--", average: "--", delta: "--", rank: "COMING SOON", note: "シーズン開始後に集計されます", progress: "0%" },
+          csat: { value: "--", average: "--", delta: "--", rank: "COMING SOON", note: "シーズン開始後に集計されます", progress: "0%" },
+          question: { value: "--", average: "--", delta: "--", rank: "COMING SOON", note: "シーズン開始後に集計されます", progress: "0%" }
+        }
+      };
+
+      function setField(name, html) {
+        document.querySelector(`[data-field="${name}"]`).innerHTML = html;
+      }
+
+      function renderSeason(season) {
+        Object.entries(seasonMetrics[season]).forEach(([metric, values]) => {
+          Object.entries(values).forEach(([key, value]) => {
+            if (key !== "progress") setField(`${metric}.${key}`, value);
+          });
+
+          const card = document.querySelector(`[data-metric-card="${metric}"]`);
+          card.style.setProperty("--progress", values.progress);
+          setField(`${metric}.progressLabel`, values.progress);
+        });
+      }
+
+      document.querySelectorAll("[data-season]").forEach((tab) => {
+        tab.addEventListener("shown.bs.tab", () => renderSeason(tab.dataset.season));
+      });
+    </script>
+  </body>
+</html>
