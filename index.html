@@ -7,6 +7,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
     <style>
+      /* ------------------------------------------------------------
+         Theme tokens
+         画面全体で使う色・影などの共通値。
+      ------------------------------------------------------------ */
       :root {
         --bg: #151817;
         --panel: rgba(28, 31, 31, 0.86);
@@ -26,6 +30,10 @@
         box-sizing: border-box;
       }
 
+      /* ------------------------------------------------------------
+         Base layout
+         背景と、画面全体を囲うスコアボード領域。
+      ------------------------------------------------------------ */
       body {
         min-height: 100vh;
         margin: 0;
@@ -52,6 +60,11 @@
         box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035), var(--shadow);
       }
 
+      /* ------------------------------------------------------------
+         Header / season tabs
+         タイトルとS1〜S4のシーズン切り替えタブ。
+         Bootstrapのpill tab機能を使いつつ、見た目を独自調整。
+      ------------------------------------------------------------ */
       .topbar {
         display: grid;
         grid-template-columns: minmax(360px, 1fr) auto;
@@ -113,6 +126,11 @@
         white-space: nowrap;
       }
 
+      /* ------------------------------------------------------------
+         Main metric cards
+         AHT / CSAT / 質疑率の3カード。
+         各カードの色はHTML側のCSS変数 --accent で指定。
+      ------------------------------------------------------------ */
       .metrics {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -137,7 +155,6 @@
         height: 8px;
         content: "";
         background: var(--accent);
-        box-shadow: 0 0 14px var(--accent);
       }
 
       .metric-head {
@@ -246,7 +263,6 @@
         height: 100%;
         border-radius: 4px;
         background: var(--accent);
-        box-shadow: 0 0 14px var(--accent);
       }
 
       .progress-label {
@@ -257,6 +273,10 @@
         font-weight: 900;
       }
 
+      /* ------------------------------------------------------------
+         Lower layout
+         下段のACHIEVEMENTS、ACTIVITY LOG、KPI TRENDの2カラム構成。
+      ------------------------------------------------------------ */
       .lower-grid {
         display: grid;
         grid-template-columns: 1.06fr 0.94fr;
@@ -368,6 +388,10 @@
         text-align: center;
       }
 
+      /* ------------------------------------------------------------
+         Activity log / KPI trend
+         右下の累計値と週次推移グラフ。
+      ------------------------------------------------------------ */
       .right-stack {
         display: grid;
         grid-template-rows: auto 1fr;
@@ -400,6 +424,10 @@
         font-weight: 900;
       }
 
+      /* ------------------------------------------------------------
+         Rank-up demo button
+         モック確認用の「演出」ボタン。
+      ------------------------------------------------------------ */
       .rank-demo-button {
         border: 1px solid rgba(255, 230, 41, 0.54);
         color: var(--text);
@@ -414,6 +442,11 @@
         background: var(--gold);
       }
 
+      /* ------------------------------------------------------------
+         Rank-up ritual effect
+         各指標カード内だけを暗転させる昇格演出。
+         JSで各.metric-cardの末尾に .metric-ritual を追加する。
+      ------------------------------------------------------------ */
       .metric-ritual {
         position: absolute;
         inset: 0;
@@ -719,6 +752,10 @@
         text-align: center;
       }
 
+      /* ------------------------------------------------------------
+         Responsive rules
+         狭い画面では1カラム化し、文字のはみ出しを抑える。
+      ------------------------------------------------------------ */
       @media (max-width: 1180px) {
         .scoreboard {
           padding: 28px 22px;
@@ -771,7 +808,16 @@
     </style>
   </head>
   <body>
+    <!--
+      Main scoreboard
+      画面全体の外枠。背景グリッド、上部ヘッダー、メイン指標、下段情報を含む。
+    -->
     <main class="scoreboard">
+      <!--
+        Header
+        左にタイトル、右にS1〜S4のシーズンタブを配置。
+        data-season属性をJSが参照して、表示データを切り替える。
+      -->
       <header class="topbar">
         <h1 class="title">
           <i class="fas fa-trophy" aria-hidden="true"></i>
@@ -787,6 +833,11 @@
         </nav>
       </header>
 
+      <!--
+        Bootstrap tab targets
+        Bootstrapのpill tabイベント（shown.bs.tab）を使うための非表示パネル。
+        実際の表示内容は下のカード群をJSで差し替える。
+      -->
       <div class="tab-content visually-hidden" aria-hidden="true">
         <div class="tab-pane fade" id="season-s1" role="tabpanel" aria-labelledby="season-s1-tab"></div>
         <div class="tab-pane fade" id="season-s2" role="tabpanel" aria-labelledby="season-s2-tab"></div>
@@ -794,7 +845,13 @@
         <div class="tab-pane fade" id="season-s4" role="tabpanel" aria-labelledby="season-s4-tab"></div>
       </div>
 
+      <!--
+        Main metrics
+        AHT / CSAT / 質疑率の3指標カード。
+        data-field属性はJSの差し替え対象、data-metric-card属性はカード単位の演出対象。
+      -->
       <section class="metrics" aria-label="Performance metrics">
+        <!-- AHT card -->
         <article class="metric-card" data-metric-card="aht" style="--accent: var(--green); --rank-color: var(--gold); --progress: 72%;">
           <div class="metric-head">
             <div class="metric-icon"><i class="fas fa-clock" aria-hidden="true"></i></div>
@@ -821,6 +878,7 @@
           </div>
         </article>
 
+        <!-- CSAT card -->
         <article class="metric-card" data-metric-card="csat" style="--accent: var(--blue); --rank-color: var(--silver); --progress: 100%;">
           <div class="metric-head">
             <div class="metric-icon"><i class="fas fa-smile" aria-hidden="true"></i></div>
@@ -847,6 +905,7 @@
           </div>
         </article>
 
+        <!-- Question rate card -->
         <article class="metric-card" data-metric-card="question" style="--accent: var(--pink); --rank-color: var(--silver); --progress: 45%;">
           <div class="metric-head">
             <div class="metric-icon"><i class="fas fa-question" aria-hidden="true"></i></div>
@@ -874,8 +933,13 @@
         </article>
       </section>
 
+      <!--
+        Lower content
+        左: シーズンごとの実績履歴。右: 活動ログとKPI推移。
+      -->
       <section class="lower-grid">
         <div>
+          <!-- Achievement history cards -->
           <h2 class="section-title"><i class="fas fa-award" aria-hidden="true"></i> ACHIEVEMENTS</h2>
           <div class="achievement-tabs" aria-label="Achievement seasons">
             <div class="ach-tab" style="--tab-color: var(--text);">S1</div>
@@ -918,6 +982,7 @@
         </div>
 
         <div class="right-stack">
+          <!-- Activity log summary -->
           <section class="activity-panel" aria-label="Activity log">
             <div class="panel-heading">
               <h2>ACTIVITY LOG</h2>
@@ -950,6 +1015,7 @@
             </div>
           </section>
 
+          <!-- KPI trend chart -->
           <section class="trend-panel" aria-label="KPI trend">
             <div class="trend-title-row">
               <h2>KPI TREND</h2>
@@ -974,6 +1040,11 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+      /*
+       * Season data
+       * S1〜S4ごとのモック値。職場環境で数値だけ変える場合は、基本的にここを編集する。
+       * value / rank / note はHTMLタグを含められるため、画面反映時は innerHTML を使う。
+       */
       const seasonMetrics = {
         s1: {
           aht: { value: "610<small>sec</small>", average: "640sec", delta: "-30sec", rank: "SILVER", note: '<i class="fas fa-arrow-up" aria-hidden="true"></i> GOLD まであと <span style="color: var(--blue);">-40sec</span>', progress: "58%" },
@@ -997,32 +1068,56 @@
         }
       };
 
+      /*
+       * 指定した data-field の中身を差し替える小さなヘルパー。
+       * 例: setField("aht.value", "350<small>sec</small>")
+       */
       function setField(name, html) {
         document.querySelector(`[data-field="${name}"]`).innerHTML = html;
       }
 
+      /*
+       * シーズンタブ切り替え時の描画処理。
+       * 選択されたseasonMetricsの値を、AHT / CSAT / 質疑率カードへ流し込む。
+       */
       function renderSeason(season) {
         Object.entries(seasonMetrics[season]).forEach(([metric, values]) => {
+          // progress以外は data-field="metric.key" の要素へ直接反映する。
           Object.entries(values).forEach(([key, value]) => {
             if (key !== "progress") setField(`${metric}.${key}`, value);
           });
 
+          // progressはカードのCSS変数 --progress と表示ラベルの両方を更新する。
           const card = document.querySelector(`[data-metric-card="${metric}"]`);
           card.style.setProperty("--progress", values.progress);
           setField(`${metric}.progressLabel`, values.progress);
         });
       }
 
+      /*
+       * Bootstrap tab event
+       * Bootstrapのpill tabが表示完了したタイミングで、対応シーズンの値へ切り替える。
+       */
       document.querySelectorAll("[data-season]").forEach((tab) => {
         tab.addEventListener("shown.bs.tab", () => renderSeason(tab.dataset.season));
       });
 
+      /*
+       * Rank-up demo order
+       * モック用の昇格順。演出ボタンを押すたびに次の組み合わせへ進む。
+       */
       const rankUpSteps = [
         ["BRONZE", "SILVER"],
         ["SILVER", "GOLD"],
         ["GOLD", "PLATINUM"]
       ];
       let rankUpIndex = 0;
+
+      /*
+       * Ember particles
+       * カード内演出で舞う火の粉。通常ランク用とPLATINUM専用を分けている。
+       * PLATINUM専用の要素はCSSの .platinum-only で通常時は非表示。
+       */
       const emberHtml = `
         <span class="ember" style="--x: 16%; --size: 7px; --duration: 1.9s; --delay: 0s; --drift: -22px;"></span>
         <span class="ember" style="--x: 28%; --size: 5px; --duration: 2.4s; --delay: .2s; --drift: 18px;"></span>
@@ -1039,6 +1134,10 @@
         <span class="ember platinum-only" style="--x: 78%; --size: 4px; --duration: 2s; --delay: .18s; --drift: 34px;"></span>
       `;
 
+      /*
+       * 昇格演出レイヤーを各指標カードへ追加する。
+       * HTML側へ同じ演出DOMを3回直書きしないため、JSで .metric-card の末尾に生成する。
+       */
       function createMetricRitual(card) {
         card.insertAdjacentHTML("beforeend", `
           <div class="metric-ritual" aria-hidden="true">
@@ -1050,27 +1149,43 @@
             </div>
           </div>
         `);
+
+        // 演出が終わったら .show を外し、同じカードで再度発火できる状態に戻す。
         card.querySelector(".metric-ritual").addEventListener("animationend", (event) => {
           if (event.animationName === "ritualFade") event.currentTarget.classList.remove("show");
         });
       }
 
+      // ページ読み込み時に、AHT / CSAT / 質疑率の各カードへ演出レイヤーを差し込む。
       document.querySelectorAll("[data-metric-card]").forEach(createMetricRitual);
 
+      /*
+       * 昇格演出の発火処理。
+       * metricには "aht" / "csat" / "question" が入り、対象カードだけを暗転させる。
+       */
       function fireRankUp(metric) {
+        // 次に表示する昇格元・昇格先を取得し、次回用にindexを進める。
         const [fromRank, toRank] = rankUpSteps[rankUpIndex];
         rankUpIndex = (rankUpIndex + 1) % rankUpSteps.length;
 
+        // 対象カード内の演出レイヤーだけを取得する。
         const ritual = document.querySelector(`[data-metric-card="${metric}"] .metric-ritual`);
+
+        // 表示テキストを今回の昇格内容へ差し替える。
         ritual.querySelector("[data-ritual-from]").textContent = fromRank;
         ritual.querySelector("[data-ritual-to]").textContent = toRank;
         ritual.querySelector("[data-ritual-title]").textContent = toRank;
+
+        // rank-* クラスで演出の強さや色を切り替える。PLATINUMは特別演出になる。
         ritual.classList.remove("show", "rank-silver", "rank-gold", "rank-platinum");
         ritual.classList.add(`rank-${toRank.toLowerCase()}`);
+
+        // 一度レイアウトを読み直すことで、同じカードを連続クリックしてもCSS animationを再発火させる。
         void ritual.offsetWidth;
         ritual.classList.add("show");
       }
 
+      // 各カード内の「演出」ボタンに、対象カードの昇格演出を紐づける。
       document.querySelectorAll("[data-rank-demo]").forEach((button) => {
         button.addEventListener("click", () => fireRankUp(button.dataset.rankDemo));
       });
