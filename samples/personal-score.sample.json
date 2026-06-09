@@ -1,0 +1,52 @@
+{
+  "fiscalYear": 2025,
+  "scoreList": [
+    {
+      "season": "S1",
+      "17_RAW": [
+        {
+          "date": "2025/10/1",
+          "performance": 1000.0
+        },
+        {
+          "date": "2025/10/2",
+          "performance": 1023.01
+        },
+        {
+          "date": "2025/11/1",
+          "performance": 1100.0
+        }
+      ],
+      "15_RAW": [
+        {
+          "date": "2025/10/1",
+          "performance": 1000.0
+        },
+        {
+          "date": "2025/11/1",
+          "performance": 1090.0
+        }
+      ],
+      "27_RAW": [
+        {
+          "date": "2025/10/1",
+          "performance": 1000.0
+        },
+        {
+          "date": "2025/11/1",
+          "performance": 1080.0
+        }
+      ],
+      "21_RAW": [
+        {
+          "date": "2025/10/1",
+          "performance": 1000.0
+        },
+        {
+          "date": "2025/11/1",
+          "performance": 1070.0
+        }
+      ]
+    }
+  ]
+}
